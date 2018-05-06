@@ -1,17 +1,21 @@
 package translator;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 @Component
 public class Translator{
@@ -21,9 +25,23 @@ public class Translator{
     @Value( "${yandex.key}")
     private String key;
 
+    @Value( "es")
+    private String lang;
+
+    @Autowired
+    private LanguageRepository lr;
+
     public Translator(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
+
+
+
+    @Scheduled(fixedRate = 10000)
+    public void reportCurrentTime() {
+        lang = lr.findAll().iterator().next().getLanguage();
+    }
+
 
     public void receiveMessage(String message) {
 
@@ -45,7 +63,7 @@ public class Translator{
         MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
         map.add("key", key);
         map.add("text", texto);
-        map.add("lang", "es");
+        map.add("lang", lang);
 
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
