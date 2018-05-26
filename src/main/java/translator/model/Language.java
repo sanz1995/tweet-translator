@@ -1,4 +1,4 @@
-package translator;
+package translator.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

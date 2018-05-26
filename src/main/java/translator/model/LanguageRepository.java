@@ -1,4 +1,4 @@
-package translator;
+package translator.model;
 
 import org.springframework.data.repository.CrudRepository;
 

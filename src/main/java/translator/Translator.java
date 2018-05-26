@@ -14,8 +14,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
+import translator.model.LanguageRepository;
 
 @Component
 public class Translator{
